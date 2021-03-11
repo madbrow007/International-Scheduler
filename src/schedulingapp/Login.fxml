@@ -7,32 +7,32 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="schedulingapp.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schedulingapp.LoginController">
    <children>
-      <Text fx:id="loginLbl" layoutX="255.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" wrappingWidth="120.64337158203125">
+      <Text fx:id="loginLbl" layoutX="250.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" wrappingWidth="214.24334716796875">
          <font>
             <Font size="27.0" />
          </font>
       </Text>
-      <Text fx:id="userLbl" layoutX="107.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username:">
+      <Text fx:id="userLbl" layoutX="46.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username:" wrappingWidth="165.66976928710938">
          <font>
-            <Font size="22.0" />
+            <Font size="17.0" />
          </font>
       </Text>
-      <Text fx:id="passLbl" layoutX="110.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:">
+      <Text fx:id="passLbl" layoutX="46.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" wrappingWidth="165.66976928710938">
          <font>
-            <Font size="22.0" />
+            <Font size="17.0" />
          </font>
       </Text>
       <TextField id="userTF" fx:id="userTF" layoutX="226.0" layoutY="121.0" />
       <TextField fx:id="passTF" layoutX="226.0" layoutY="174.0" />
-      <Button fx:id="submitBtn" layoutX="502.0" layoutY="343.0" mnemonicParsing="false" onAction="#handleButtonAction" text="Submit" />
-      <Button fx:id="clearBtn" layoutX="422.0" layoutY="343.0" mnemonicParsing="false" onAction="#handleButtonAction" text="Clear" />
-      <Label fx:id="zoneLbl" layoutX="24.0" layoutY="243.0" prefHeight="34.0" prefWidth="202.0" text="Location:">
+      <Button fx:id="submitBtn" layoutX="363.0" layoutY="334.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="34.0" prefWidth="102.0" text="Submit" />
+      <Button fx:id="clearBtn" layoutX="477.0" layoutY="333.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="36.0" prefWidth="102.0" text="Clear" />
+      <Label fx:id="zoneLbl" alignment="CENTER" layoutX="24.0" layoutY="243.0" prefHeight="34.0" prefWidth="214.0" text="Location:">
          <font>
             <Font size="23.0" />
          </font>
       </Label>
+      <Label fx:id="zoneNameLbl" layoutX="238.0" layoutY="247.0" prefHeight="26.0" prefWidth="172.0" text="Label" />
    </children>
 </AnchorPane>
