@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="346.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schedulingapp.EditCustomersController">
+   <children>
+      <AnchorPane id="AnchorPane" layoutX="10.0" layoutY="10.0" prefHeight="337.0" prefWidth="587.0">
+         <children>
+            <Label alignment="CENTER" layoutX="206.0" layoutY="14.0" prefHeight="34.0" prefWidth="187.0" text="Update Customer" textAlignment="CENTER">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="customer_ID_TB" disable="true" layoutX="105.0" layoutY="87.0" onAction="#handleButtonAction" promptText="ID Auto-Generated" />
+            <TextField fx:id="postal_Code_TB" layoutX="105.0" layoutY="210.0" onAction="#handleButtonAction" promptText="123456" />
+            <TextField fx:id="name_TB" layoutX="105.0" layoutY="128.0" onAction="#handleButtonAction" promptText="John" />
+            <TextField fx:id="address_TB" layoutX="105.0" layoutY="167.0" onAction="#handleButtonAction" promptText="Doe" />
+            <TextField fx:id="phone_TB" layoutX="354.0" layoutY="189.0" onAction="#handleButtonAction" promptText="555-123-4567" />
+            <Accordion layoutX="367.0" layoutY="10.0" />
+            <ComboBox fx:id="country_Combo" layoutX="353.0" layoutY="96.0" onAction="#handleButtonAction" prefWidth="150.0" promptText="Select Country First" />
+            <Button fx:id="update_Btn" layoutX="489.0" layoutY="282.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="70.0" text="Update" />
+            <Button fx:id="cancel_Btn" layoutX="410.0" layoutY="282.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="70.0" text="Cancel" />
+            <Label layoutX="22.0" layoutY="91.0" text="Customer ID:" />
+            <Label layoutX="300.0" layoutY="193.0" text="Phone:" />
+            <Label layoutX="296.0" layoutY="100.0" text="Country:" />
+            <Label layoutX="56.0" layoutY="132.0" text="Name:" />
+            <Label layoutX="50.0" layoutY="171.0" text="Address:" />
+            <Label layoutX="30.0" layoutY="214.0" prefHeight="18.0" prefWidth="69.0" text="Postal Code:" />
+            <ComboBox fx:id="state_Combo" layoutX="353.0" layoutY="141.0" onAction="#handleButtonAction" prefWidth="150.0" promptText="Select State/Province" />
+            <Label layoutX="303.0" layoutY="145.0" text="State:" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

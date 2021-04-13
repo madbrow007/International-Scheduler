@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -31,7 +33,21 @@ public class Customers {
     private int division_ID;
     private DBConnection dbCon = new DBConnection();
     
-     public Customers(int customer_ID, String customer_Name, String address, String postal_Code, String phone, LocalDateTime create_Date, String created_by, LocalDateTime last_update, String last_Updated_By, int division_ID) {
+    private ObservableList<Customers> customersList = FXCollections.observableArrayList();
+    
+    /**********************************************
+     * @param customer_ID the customer id.
+     * @param customer_Name the name of the customer.
+     * @param address the address of the customer.
+     * @param postal_Code the postal code for the customer.
+     * @param phone the phone number of customer.
+     * @param create_Date the day the customer record was created.
+     * @param created_by the user who created the customer record.
+     * @param last_update the last day and time the customer record was updated.
+     * @param last_Updated_By the user who last updated the customer record.
+     * @param division_ID the customer id associated with the customer record.
+    ************************************************/
+    public Customers(int customer_ID, String customer_Name, String address, String postal_Code, String phone, LocalDateTime create_Date, String created_by, LocalDateTime last_update, String last_Updated_By, int division_ID) {
         this.customer_ID = customer_ID;
         this.customer_Name = customer_Name;
         this.address = address;
@@ -43,8 +59,10 @@ public class Customers {
         this.last_Updated_By = last_Updated_By;
         this.division_ID = division_ID;
     }
-     
-    
+
+    /** 
+     * Class constructor.
+     */
     public Customers() {
         this.customer_ID = 0;
         this.customer_Name = "";
@@ -226,7 +244,7 @@ public class Customers {
             
             //executing statement
             String sql;
-            sql = "select * from customers WHERE Customer_ID = 1";
+            sql = "select * from customers WHERE Customer_ID = " + id + "";
             System.out.println(sql);
             ResultSet rs;
             rs = stmt.executeQuery(sql);
@@ -263,6 +281,7 @@ public class Customers {
     ************************************************/
     public void updateDB(){
          try{
+            
             //create connection
             Statement stmt = dbCon.startCon();
           
@@ -275,11 +294,11 @@ public class Customers {
                     "Create_Date='" + Timestamp.valueOf(create_Date) + "'," +
                     "Created_by='" + created_by + "'," +
                     "Last_update='" + Timestamp.valueOf(last_update) + "'," +
-                    "Last_Updated_By='" + last_Updated_By + "'" +
-                    "WHERE Customer_ID=" + customer_ID + " AND Division_ID="  + division_ID;
+                    "Last_Updated_By='" + last_Updated_By + "'," + 
+                    "Division_ID='" + division_ID + "'" +
+                    "WHERE Customer_ID=" + customer_ID + "";
        
-           System.out.println("hello");
-            
+            System.out.println(sql);
            stmt.executeUpdate(sql);
            
            //closing connection 
@@ -306,21 +325,19 @@ public class Customers {
      * @param last_Updated_By the person who last updated the customer record.
      * @param division_ID the division id associated with the customer.
     ************************************************/
-    public void insertDB(String customer_Name, String address, String postal_Code, String phone, LocalDateTime create_Date, String created_by, LocalDateTime last_update, String last_Updated_By, int division_ID){
+    public void insertDB(String customer_Name, String address, String postal_Code, String phone, String created_by, String last_Updated_By, int division_ID){
          try{
            //create connection
             Statement stmt = dbCon.startCon();
            
             //executing statement
             String sql;
-            sql = "insert into customers (customer_Name, address, postal_Code, phone, create_Date, created_by, last_update, last_Updated_By, division_ID)" 
+            sql = "insert into customers (customer_Name, address, postal_Code, phone, created_by, last_Updated_By, division_ID)" 
                     + " values ('" + customer_Name + "','" +
                     address + "','" +
                     postal_Code + "','" +
                     phone + "','" +
-                    Timestamp.valueOf(create_Date) + "','" +
                     created_by + "','" +
-                    Timestamp.valueOf(last_update) + "','" +
                     last_Updated_By + "'," +
                     division_ID + "" + 
                      ")";
@@ -340,7 +357,12 @@ public class Customers {
       }
     }
     
+    /**********************************************
+     * deletes record from database.
+     * @param customer_ID the id of the customer.
+    ************************************************/
     public void deleteDB(int customer_ID){
+  
         try{
             
             Statement stmt = dbCon.startCon();
@@ -349,9 +371,9 @@ public class Customers {
             String sql;
             sql = "DELETE FROM customers WHERE Customer_ID = " + "" + customer_ID + ";";
             System.out.println(sql);
-            ResultSet rs;
-            rs = stmt.executeQuery(sql);
-           
+
+            stmt.execute(sql);  
+
             //Close Connection
             dbCon.closeCon(dbCon.getCon());
          }
@@ -364,19 +386,56 @@ public class Customers {
       }
     }
     
+    /**********************************************
+      * connects to the database to retrieve customers
+      * @return the customer list.
+    ************************************************/
+    public ObservableList<Customers> getAllCustomers(){
+         
+         try{
+            Statement stmt = dbCon.startCon();
+            String sql = sql = "select * from customers";
+            
+            customersList.clear();
+            
+            //executing statement
+            System.out.println(sql);
+            ResultSet rs;
+            rs = stmt.executeQuery(sql);
+         
+            //process through the result set
+            while(rs.next()){
+            Customers customer = new Customers();
+            customer.setCustomer_ID(rs.getInt(1));
+            customer.setCustomer_Name(rs.getString(2));
+            customer.setAddress(rs.getString(3));
+            customer.setPostal_Code(rs.getString(4));
+            customer.setPhone(rs.getString(5));
+            customer.setCreate_Date(rs.getTimestamp(6).toLocalDateTime());
+            customer.setCreated_by(rs.getString(7));
+            customer.setLast_update(rs.getTimestamp(8).toLocalDateTime());
+            customer.setLast_Updated_By(rs.getString(9));
+            customer.setDivision_ID (rs.getInt(10));
+          
+            customersList.add(customer);
+            }
+            //Close Connection
+            dbCon.closeCon(dbCon.getCon());
+         }
+         catch(SQLException e){
+             System.out.print(e);
+         }
+         catch(Exception e){
+             System.out.println(e);
+         }
+          return customersList; 
+     }
     
-    public static void main(String args[]){
-       //Tester Code
-        Customers c4 = new Customers();
-        //c4.selectDB(2);
-        //c4.setCreated_by("Madison B");
-        //c4.setAddress("333 fart way");
-        //c4.insertDB(c4.getCustomer_Name(), c4.getAddress(), c4.getPostal_Code(), c4.getPhone(), c4.getCreate_Date(), c4.getCreated_by(), c4.getLast_update(), c4.getLast_Updated_By(), c4.getDivision_ID());
-        //c4.display();
-        c4.deleteDB(4);
-       //its Frank
-       //c4.setFirstName("FrankK");
-       //c4.updateDB();
+     /**********************************************
+      * @return the appointment list.
+    ************************************************/
+    public ObservableList<Customers> getCustomersForView(){
+        return customersList;
     }
-    
+
 }

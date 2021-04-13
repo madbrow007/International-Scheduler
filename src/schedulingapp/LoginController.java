@@ -5,6 +5,9 @@
  */
 package schedulingapp;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.time.*;
@@ -67,29 +70,50 @@ public class LoginController implements Initializable {
     @FXML
     public void handleButtonAction(ActionEvent ev) throws IOException
     {
-        //Exit Button
-         //  if( ev.getSource() == eBtn){
-         //     System.exit(0);
-          //  }
+        //Clear Button
+           if( ev.getSource() == clearBtn){
+                userTF.clear();
+                passTF.clear();
+            }
           
          //submit button  
         //change to switch screen not add screen
-           if( ev.getSource() == submitBtn){
-               if (userTF.getText().equals("test") & passTF.getText().equals("test")){
-                   
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
-                    Parent parentName = fxmlLoader.load();
-                    Scene sceneName = new Scene(parentName);
-                  //  MainScreenController mainScreen = fxmlLoader.getController();
-                    Stage window = (Stage) ((Node) ev.getSource()).getScene().getWindow();
-                 //   mainScreen.getOldWindow(oldWindow);
-                 //   Stage window = new Stage();
-                    window.setScene(sceneName);
-                    window.show();
-                    
-               }  
-               else {passAlert.showAndWait();}
+           if (ev.getSource() == submitBtn) {
+            try {
+               File file = new File("login_activity.txt");
+               FileWriter logFile = new FileWriter(file, true);
+               BufferedWriter logFileBW = new BufferedWriter(logFile); 
                
+      
+                   if (userTF.getText().equals("test") & passTF.getText().equals("test")) {
+
+                       logFileBW.newLine();
+                       logFileBW.write("Login Attempt: " + LocalDateTime.now().toString() + " Was Succesful");
+
+                       logFileBW.close();
+
+                       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
+                       Parent parentName = fxmlLoader.load();
+                       Scene sceneName = new Scene(parentName);
+
+                       MainScreenController MainScreen = fxmlLoader.getController();
+                       MainScreen.checkForAppointments(LocalDateTime.now());
+
+                       Stage window = (Stage) ((Node) ev.getSource()).getScene().getWindow();
+                       window.setScene(sceneName);
+                       window.show();
+                   }
+                   else {
+                       logFileBW.newLine();
+                       logFileBW.write("Login Attempt: " + LocalDateTime.now().toString() + " Failed");
+
+                       logFileBW.close();
+                      passAlert.showAndWait();
+                    }
+               
+              } catch (IOException e) {
+                    System.out.println(e);
+                }
             }
     }
     
@@ -97,8 +121,6 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         
-        
-      
         //creates language translation
         try{
         
@@ -126,6 +148,5 @@ public class LoginController implements Initializable {
             if (!((Locale.getDefault().getLanguage()).equals("en")))
                     System.out.println("Lanaguage not supported");;
         }
-        
     }       
 }

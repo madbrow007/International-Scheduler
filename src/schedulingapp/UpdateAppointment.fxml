@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="623.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schedulingapp.UpdateAppointmentController">
+   <children>
+      <Label alignment="CENTER" layoutX="206.0" layoutY="14.0" prefHeight="34.0" prefWidth="187.0" text="Update Appointment" textAlignment="CENTER">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="appointment_ID_TB" disable="true" layoutX="126.0" layoutY="86.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="138.0" promptText="Appointment_ID" />
+      <TextField fx:id="location_TB" layoutX="126.0" layoutY="210.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="138.0" promptText="Location" />
+      <TextField fx:id="title_TB" layoutX="126.0" layoutY="127.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="138.0" promptText="Title" />
+      <TextField fx:id="desc_TB" layoutX="125.0" layoutY="167.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="138.0" promptText="Description" />
+      <TextField fx:id="type_TB" layoutX="124.0" layoutY="285.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="138.0" promptText="Type" />
+      <TextField fx:id="user_ID_TB" layoutX="384.0" layoutY="241.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="130.0" promptText="User_ID" />
+      <TextField fx:id="cust_ID_TB" layoutX="384.0" layoutY="201.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="130.0" promptText="Customer_ID" />
+      <Accordion layoutX="367.0" layoutY="10.0" />
+      <ComboBox fx:id="contact_Combo" layoutX="125.0" layoutY="249.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="138.0" promptText="Contact" />
+      <Button fx:id="update_Btn" layoutX="511.0" layoutY="352.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="70.0" text="Update" />
+      <Button fx:id="cancel_Btn" layoutX="424.0" layoutY="352.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="70.0" text="Cancel" />
+      <Label layoutX="13.0" layoutY="91.0" prefHeight="18.0" prefWidth="111.0" text="Appointment ID:" />
+      <Label layoutX="66.0" layoutY="289.0" text="Type:" />
+      <Label layoutX="305.0" layoutY="134.0" text="Start Time" />
+      <Label layoutX="308.0" layoutY="171.0" text="End Time" />
+      <Label layoutX="320.0" layoutY="241.0" text="User ID" />
+      <Label layoutX="291.0" layoutY="205.0" prefHeight="18.0" prefWidth="89.0" text="Customer ID:" />
+      <Label layoutX="59.0" layoutY="254.0" text="Contact" />
+      <Label layoutX="80.0" layoutY="132.0" text="Title:" />
+      <Label layoutX="47.0" layoutY="171.0" text="Description" />
+      <Label layoutX="50.0" layoutY="214.0" prefHeight="18.0" prefWidth="61.0" text="Location" />
+      <Button fx:id="reset_Btn" layoutX="524.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="70.0" text="Reset" textFill="#4273f8" />
+      <DatePicker fx:id="datePicker" layoutX="384.0" layoutY="88.0" onAction="#handleButtonAction" />
+      <Label layoutX="332.0" layoutY="92.0" prefHeight="17.0" prefWidth="39.0" text="Date" />
+      <ComboBox fx:id="end_Combo" layoutX="382.0" layoutY="167.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="130.0" promptText="end" />
+      <ComboBox fx:id="start_Combo" layoutX="382.0" layoutY="127.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="130.0" promptText="start" />
+   </children>
+</AnchorPane>

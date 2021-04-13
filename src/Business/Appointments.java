@@ -9,7 +9,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 
 /**
  *
@@ -17,6 +27,7 @@ import java.time.LocalDateTime;
  */
 public class Appointments {
     
+    //Properties
     private int appointment_ID;
     private String title;
     private String description;
@@ -31,8 +42,18 @@ public class Appointments {
     private int customer_ID;
     private int user_ID;
     private int contact_ID; 
+    
+    DateTimeFormatter tf = DateTimeFormatter.ofPattern("hh:mm a");
+    
     private DBConnection dbCon = new DBConnection();
     
+    private ObservableList<Appointments> appointmentsList = FXCollections.observableArrayList();
+    
+    public final LocalDateTime currentTime = LocalDateTime.now();
+    
+    /** 
+     * Class constructor.
+     */
     public Appointments(){
         this.appointment_ID = 0;
         this.title = "";
@@ -50,6 +71,22 @@ public class Appointments {
         this.contact_ID = 0;
     }
 
+    /**********************************************
+     * @param appointment_ID the appointment id.
+     * @param title the title of the appointment.
+     * @param description the description of the appointment.
+     * @param location the location for the appointment.
+     * @param type the type of appointment.
+     * @param start the start day and time of the appointment.
+     * @param end the end day and time of the appointment.
+     * @param create_Date the day the appointment was created.
+     * @param created_by the user who created the appointment.
+     * @param last_update the last day and time the appointment was updated.
+     * @param last_Updated_By the user who last updated the appointment.
+     * @param customer_ID the customer id associated with this appointment.
+     * @param user_ID the user id associated with this appointment.
+     * @param contact_ID  he contact id associated with this appointment.
+    ************************************************/
     public Appointments(int appointment_ID, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, LocalDateTime create_Date, String created_by, LocalDateTime last_update, String last_Updated_By, int customer_ID, int user_ID, int contact_ID) {
         this.appointment_ID = appointment_ID;
         this.title = title;
@@ -263,28 +300,102 @@ public class Appointments {
         this.contact_ID = contact_ID;
     }
     
-    //display test method
-    public void display(){
-        System.out.println("appointment_ID: " + appointment_ID);
-        System.out.println("title " + title);
-        System.out.println("description: " + description);
-        System.out.println("location: " + location);
-        System.out.println("type: " + type);
-        System.out.println("start: " + start);
-        System.out.println("end " + end);
-        System.out.println("create_Date: " + create_Date);
-        System.out.println("created_by: " + created_by);
-        System.out.println("last_update: " + last_update);
-        System.out.println("last_Updated_By: " + last_Updated_By);
-        System.out.println("customer_ID: " + customer_ID);
-        System.out.println("user_ID: " + user_ID);
-        System.out.println("contact_ID: " + contact_ID);
+    /**
+     * @param appointmentsList the appointmentsList to set without going to database
+     */
+    public void setAppointmentsList(ObservableList<Appointments> appointmentsList) {
+        this.appointmentsList = appointmentsList;
     }
+
+     /**
+     * @param utcDB the LocalDateTime object from the database set in UTC
+     * @return LocalDateTime object converted to the user's local time zone
+     */
+    public LocalDateTime convertToLocal (LocalDateTime utcDB){
+        
+        ZonedDateTime zonedUTC = utcDB.atZone(ZoneId.of("UTC"));
+        ZonedDateTime zonedUTCToLocal = zonedUTC.withZoneSameInstant(ZoneId.of(ZoneId.systemDefault().toString()));
+        LocalDateTime after = zonedUTCToLocal.toLocalDateTime();
+        
+       return after;
+    }
+    
+     /**
+     * @param before the LocalTime object that's set in UTC
+     * @return LocalTime object converted to the user's local time zone
+     */
+    public LocalTime convertToLocal (LocalTime before){
+        
+        LocalDateTime utcDB = before.atDate(LocalDate.now());
+        ZonedDateTime zonedUTC = utcDB.atZone(ZoneId.of("UTC"));
+        ZonedDateTime zonedUTCToLocal = zonedUTC.withZoneSameInstant(ZoneId.of(ZoneId.systemDefault().toString()));
+        LocalDateTime zonedUTCToLocalDT = zonedUTCToLocal.toLocalDateTime();
+        LocalTime after = zonedUTCToLocalDT.toLocalTime();
+        
+       return after;
+    }
+    
+     /**
+     * @param before the LocalTime object that's set in the users local time zone
+     * @return LocalTime object converted to the company's EST time zone
+     */
+    public LocalTime compareToEst (LocalTime before){
+        
+        LocalDateTime utcDB = before.atDate(LocalDate.now());
+        ZonedDateTime zonedUTC = utcDB.atZone(ZoneId.of("UTC"));
+        ZonedDateTime zonedUTCToEst = zonedUTC.withZoneSameInstant(ZoneId.of("America/New_York"));
+        LocalDateTime zonedEstToLocalDT = zonedUTCToEst.toLocalDateTime();
+        LocalTime after = zonedEstToLocalDT.toLocalTime();
+    
+       return after;
+    }
+   
+     /**
+     * @param local the LocalDateTime object that's set in the users local time zone
+     * @return LocalDateTime object converted to UTC time
+     */
+    public LocalDateTime convertToUTC (LocalDateTime local){
+       
+        ZonedDateTime zonedLocal = local.atZone(ZoneId.of(ZoneId.systemDefault().toString()));
+        ZonedDateTime zonedLocalToUTC = zonedLocal.withZoneSameInstant(ZoneId.of("UTC"));
+        LocalDateTime after = zonedLocalToUTC.toLocalDateTime();
+        
+       return after;
+    }
+    
+     /**
+     * @param newStart the start time of the appointment being added or updated
+     * @param newEnd the end time of the appointment being added or updated
+     * @param existingApps the list of appointments that already exist
+     * @throws ScheduleOverlapException if schedule overlap or incorrect time set exception occurs 
+     */
+    public void checkForOverlaps (LocalTime newStart, LocalTime newEnd, FilteredList<Appointments> existingApps) throws ScheduleOverlapException{ 
+     
+        for (Appointments app : existingApps){
+              
+           
+            LocalTime appStart = convertToLocal(app.getStart().toLocalTime());
+
+            LocalTime appEnd = convertToLocal(app.getEnd().toLocalTime());
+
+            System.out.println(newStart.toString());
+            System.out.println(newEnd.toString());
+            
+            if (appStart.isBefore(newEnd) && newStart.isBefore(appEnd)){
+               throw new ScheduleOverlapException("Scheduling error, Please Try Again! Date Must not be overlapped with another appointment!");
+            }
+            if (newStart.isAfter(newEnd) || newStart.equals(newEnd)){
+                throw new ScheduleOverlapException("Scheduling error, End of appointment MUST be at least 1 hour after the start!");
+            }
+        }
+    }   
+    
+
    //sql methods
     /**********************************************
      * selects record from database and sets class
      *    properties.
-     * @param id string representing the appointment
+     * @param id integer representing the appointment
      *    id.
     ************************************************/
     public void selectDB(int id){
@@ -293,7 +404,7 @@ public class Appointments {
             
             //executing statement
             String sql;
-            sql = "select * from appointments WHERE appointment_ID = 1";
+            sql = "select * from appointments WHERE appointment_ID = " + id + "";
             System.out.println(sql);
             ResultSet rs;
             rs = stmt.executeQuery(sql);
@@ -327,9 +438,11 @@ public class Appointments {
           System.out.println(e);
       }
     }  
-      /**********************************************
+    
+    /**********************************************
      * update database record according to current class
      *    property values.
+     * @param id of the appointment
     ************************************************/
     public void updateDB(){
          try{
@@ -344,8 +457,6 @@ public class Appointments {
                     "type='" + type + "'," +
                     "start='" + Timestamp.valueOf(start) + "'," +
                     "end='" + Timestamp.valueOf(end) + "'," +
-                    "Create_Date='" + Timestamp.valueOf(create_Date) + "'," +
-                    "Created_by='" + created_by + "'," +
                     "Last_update='" + Timestamp.valueOf(last_update) + "'," +
                     "Last_Updated_By='" + last_Updated_By + "'," +
                     "customer_ID=" + customer_ID + "," +
@@ -366,6 +477,7 @@ public class Appointments {
              System.out.print(e);
          }
     } 
+    
     /**********************************************
      * adds new record to database.
      * @param title the title of the appointment.
@@ -374,31 +486,27 @@ public class Appointments {
      * @param type the type of the type.
      * @param start the start of the appointment.
      * @param end the end of the appointment.
-     * @param create_Date the day the appointment record was created.
      * @param created_by the person who created the appointment record.
-     * @param last_update the latest date the appointment record was updated.
      * @param last_Updated_By the person who last updated the appointment record.
      * @param customer_ID the customer_ID associated with the appointment.
      * @param user_ID the user_ID associated with the appointment.
      * @param contact_ID the contact_ID associated with the appointment.
     ************************************************/
-    public void insertDB(String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, LocalDateTime create_Date, String created_by, LocalDateTime last_update, String last_Updated_By, int customer_ID, int user_ID, int contact_ID){
+    public void insertDB(String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, String created_by, String last_Updated_By, int customer_ID, int user_ID, int contact_ID){
          try{
            //create connection
             Statement stmt = dbCon.startCon();
            
             //executing statement
             String sql;
-            sql = "insert into appointments (title, description, location, type, start, end, create_Date, created_by, last_update, last_Updated_By, customer_ID, user_ID, contact_ID)" 
+            sql = "insert into appointments (title, description, location, type, start, end, created_by, last_Updated_By, customer_ID, user_ID, contact_ID)" 
                     + " values ('" + title + "','" +
                     description + "','" +
                     location + "','" +
                     type + "','" +
                     Timestamp.valueOf(start) + "','" +
                     Timestamp.valueOf(end) + "','" +
-                    Timestamp.valueOf(create_Date) + "','" +
                     created_by + "','" +
-                    Timestamp.valueOf(last_update) + "','" +
                     last_Updated_By + "'," +
                     customer_ID + "," + 
                     user_ID + "," + 
@@ -420,20 +528,117 @@ public class Appointments {
       }
     }
     
-     
-    
-     public static void main(String args[]){
-       //Tester Code
-        Appointments a4 = new Appointments();
-         a4.selectDB(1);
-         a4.setType("doop");
-         a4.setLocation("poop");
-        // a4.updateDB();
-         a4.insertDB(a4.getTitle(), a4.getDescription(), a4.getLocation(), a4.getType(), a4.getStart(), a4.getStart(), a4.getCreate_Date(), a4.getCreated_by(), a4.getLast_update(), a4.getLast_Updated_By(), a4.getCustomer_ID(), a4.getUser_ID(), a4.getContact_ID());
-         a4.display();
-       // c4.deleteDB(4);
-       //its Frank
-       //c4.setFirstName("FrankK");
-       //c4.updateDB();
+    /**********************************************
+     * deletes 1 record from database.
+     * @param appointment_id the id of the appointment.
+    ************************************************/
+    public void deleteDB(int appointment_id){
+        try{
+            
+            Statement stmt = dbCon.startCon();
+            
+            //executing statement
+            String sql;
+            sql = "DELETE FROM appointments WHERE appointment_id = " + "" + appointment_id + ";";
+            System.out.println(sql);
+           
+            stmt.execute(sql);
+           
+            //Close Connection
+            dbCon.closeCon(dbCon.getCon());
+         }
+         catch(SQLException e){
+             System.out.print(e);
+         }
+         catch(Exception e)
+      {
+          System.out.println(e);
+      }
     }
+    
+    /**********************************************
+     * deletes all records associated with customer_ID from database.
+     * @param customer_ID the id of the customer.
+    ************************************************/
+    public void deleteDBCust(int customer_ID){
+        try{
+            
+            Statement stmt = dbCon.startCon();
+            
+            //executing statement
+            String sql;
+            sql = "DELETE FROM appointments WHERE customer_ID = " + "" + customer_ID + ";";
+            System.out.println(sql);
+            stmt.execute(sql);  
+           
+            //Close Connection
+            dbCon.closeCon(dbCon.getCon());
+         }
+         catch(SQLException e){
+             System.out.print(e);
+         }
+         catch(Exception e)
+      {
+          System.out.println(e);
+      }
+    }
+    
+    /**********************************************
+     * @return the appointment list.
+    ************************************************/
+    public ObservableList<Appointments> getAppsForView(){
+        return appointmentsList;
+    }
+    
+    /**********************************************
+      * connects to the database to retrieve appointments
+      * @return the appointment list.
+    ************************************************/
+    public ObservableList<Appointments> getAllAppointments(){
+         
+         try{
+            Statement stmt = dbCon.startCon();
+            String sql = sql = "select * from appointments";
+            
+            appointmentsList.clear();
+            
+            //executing statement
+            System.out.println(sql);
+            ResultSet rs;
+            rs = stmt.executeQuery(sql);
+            
+            //process through the result set
+            while(rs.next()){
+            Appointments app = new Appointments();
+            app.setAppointment_ID(rs.getInt(1));
+            app.setTitle(rs.getString(2));
+            app.setDescription(rs.getString(3));
+            app.setLocation(rs.getString(4));
+            app.setType(rs.getString(5));
+            app.setStart(rs.getTimestamp(6).toLocalDateTime());
+            app.setEnd(rs.getTimestamp(7).toLocalDateTime());
+            app.setCreate_Date(rs.getTimestamp(8).toLocalDateTime());
+            app.setCreated_by(rs.getString(9));
+            app.setLast_update(rs.getTimestamp(10).toLocalDateTime());
+            app.setLast_Updated_By(rs.getString(11));
+            app.setCustomer_ID(rs.getInt(12));
+            app.setUser_ID(rs.getInt(13));
+            app.setContact_ID(rs.getInt(14));
+           
+            appointmentsList.add(app);
+            }
+            //Close Connection
+            dbCon.closeCon(dbCon.getCon());
+         }
+         catch(SQLException e){
+             System.out.print(e);
+         }
+         catch(Exception e){
+             System.out.println(e);
+         }
+          return appointmentsList; 
+     }
+ 
 }
+
+

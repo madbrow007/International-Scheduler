@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="432.0" prefWidth="799.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schedulingapp.ViewReportsController">
+   <children>
+      <TableView fx:id="schedule_Table" layoutX="21.0" layoutY="75.0" prefHeight="303.0" prefWidth="572.0">
+         <columns>
+            <TableColumn fx:id="appointment_ID_Col" prefWidth="27.200014114379883" text="ID" />
+            <TableColumn fx:id="title_Col" prefWidth="40.40001678466797" text="Title" />
+            <TableColumn fx:id="desc_Col" prefWidth="94.4000244140625" text="Description" />
+            <TableColumn fx:id="typeS_Col" prefWidth="62.4000244140625" text="Type" />
+            <TableColumn fx:id="start_Col" prefWidth="145.6666259765625" text="Start" />
+            <TableColumn fx:id="end_Col" prefWidth="145.00006103515625" text="End" />
+            <TableColumn fx:id="customer_ID_Col" prefWidth="49.33331298828125" text="Cust ID" />
+         </columns>
+      </TableView>
+      <TableView fx:id="type_Total_Table" layoutX="640.0" layoutY="59.0" prefHeight="142.0" prefWidth="118.0">
+         <columns>
+            <TableColumn fx:id="type_Col" prefWidth="72.00006103515625" text="Type" />
+            <TableColumn fx:id="total_Col" prefWidth="44.799963378906256" text="Total" />
+         </columns>
+      </TableView>
+      <TableView fx:id="country_Total_Table" layoutX="640.0" layoutY="270.0" prefHeight="108.0" prefWidth="118.0">
+         <columns>
+            <TableColumn fx:id="country_Col" prefWidth="78.0" text="Country" />
+            <TableColumn fx:id="total2_Col" prefWidth="39.0" text="Total" />
+         </columns>
+      </TableView>
+      <RadioButton fx:id="type_RB" layoutX="633.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleButtonAction" text="Type" />
+      <RadioButton fx:id="month_RB" layoutX="700.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleButtonAction" text="Month" />
+      <Button fx:id="cancel_Btn" layoutX="717.0" layoutY="386.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="47.0" text="Exit" />
+      <Label alignment="CENTER" layoutX="348.0" prefHeight="35.0" prefWidth="103.0" text="Reports">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="24.0" layoutY="39.0" prefHeight="20.0" prefWidth="87.0" text="Schedule for:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="contact_Combo" layoutX="111.0" layoutY="37.0" onAction="#handleButtonAction" prefWidth="150.0" promptText="Contacts" />
+      <Label alignment="CENTER" layoutX="648.0" layoutY="200.0" prefHeight="70.0" prefWidth="103.0" text="New Customers this month" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="submit_Btn" layoutX="281.0" layoutY="37.0" mnemonicParsing="false" onAction="#handleButtonAction" text="Submit" />
+   </children>
+</AnchorPane>
